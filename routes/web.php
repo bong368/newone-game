@@ -12,5 +12,13 @@
 */
 
 Route::get('/', function () {
+    li()->info(GameCategory::getConstants());
+    li()->info(GameCategory::getNames());
+    li()->info(GameCategory::getValues());
+    li()->info(implode(',', \GameCategory::getNames()));
+
+    $games = \App\Models\App::find(1)->games()->get();
+    li()->info($games);
+
     return view('welcome');
 });

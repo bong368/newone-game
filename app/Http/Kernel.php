@@ -34,7 +34,8 @@ class Kernel extends HttpKernel
 
         'api' => [
             'throttle:60,1',
-            'bindings',
+            \App\Http\Middleware\VerifyHmacSignature::class,
+            \Illuminate\Routing\Middleware\SubstituteBindings::class,
         ],
     ];
 

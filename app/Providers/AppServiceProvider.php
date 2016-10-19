@@ -23,6 +23,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        //
+        if ($this->app->environment('local')) {
+            $this->app->register(\Lsrur\Inspector\InspectorServiceProvider::class);
+            $loader = \Illuminate\Foundation\AliasLoader::getInstance();
+            $loader->alias('Inspector', \Lsrur\Inspector\Facade\Inspector::class);
+        }
     }
 }

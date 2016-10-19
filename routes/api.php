@@ -13,6 +13,12 @@ use Illuminate\Http\Request;
 |
 */
 
-Route::get('/user', function (Request $request) {
-    return $request->user();
-})->middleware('auth:api');
+//Route::get('/user', function (Request $request) {
+//    return $request->user();
+//})->middleware('auth:api');
+
+Route::group(['prefix' => 'v1'], function () {
+    Route::get('/', 'Api\V1\HomeController@index');
+
+    Route::get('game', 'Api\V1\GameController@index');
+});
