@@ -22,10 +22,8 @@ class GameController extends Controller
             throw new ApiValidationException($validator->errors());
         }
 
-        $app = $request->attributes->get('API_APP');
-        $query = $app->games()
-            ->select('name', 'route', 'width', 'height', 'jackpot', 'category', 'status')
-            ->where('status', '<>', \GameStatus::PRIVATE);
+        $query = Game::appSubscribe($request->attributes->get('APP')->id)
+            ->select('name', 'route', 'width', 'height', 'jackpot', 'category', 'status');
 
         if ($request->has('category')) {
             $query->where('category', '=', \GameCategory::toValue($request->input('category')));

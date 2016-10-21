@@ -3,18 +3,11 @@
 namespace App\Http\Middleware;
 
 use Closure;
-use App\Services\AppService;
 use App\Exceptions\ApiSignatureException;
+use App\Models\App;
 
 class VerifyHmacSignature
 {
-    protected $appService;
-
-    public function __construct(AppService $appService)
-    {
-        $this->appService = $appService;
-    }
-
     /**
      * Handle an incoming request.
      *
@@ -32,18 +25,15 @@ class VerifyHmacSignature
         $timestamp = $request->header('x-timestamp');
         $signature = $request->header('x-signature');
 
-        $app = $this->appService->getByAppKey($appKey);
+        $app = App::where('app_key', '=', $appKey)->first();
         if ($app === null) {
             throw new ApiSignatureException();
         }
+        $request->attributes->add(['APP' => $app]);
 
-        $request->attributes->add(['API_APP' => $app]);
-
-        $secretKey = $app->secret_key;
         $baseUrl = $this->getBaseUrl($request->url());
         $parameterString = $this->getParameterString($request->input());
-
-        $compareSignature = $this->calculateSignature($appKey, $secretKey, $timestamp, $baseUrl, $parameterString);
+        $compareSignature = $this->calculateSignature($app->app_key, $app->secret_key, $timestamp, $baseUrl, $parameterString);
 
         if ($compareSignature !== $signature) {
             throw new ApiSignatureException();
