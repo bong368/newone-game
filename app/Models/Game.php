@@ -30,9 +30,4 @@ class Game extends Model
             ->where('games.status', '<>', \GameStatus::PRIVATE)
             ->where('app_game.app_id', '=', $appId);
     }
-
-//    public function apps()
-//    {
-//        return $this->belongsToMany(App::class);
-//    }
 }

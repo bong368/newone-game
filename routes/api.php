@@ -20,5 +20,8 @@ use Illuminate\Http\Request;
 Route::group(['prefix' => 'v1'], function () {
     Route::get('/', 'Api\V1\HomeController@index');
 
-    Route::get('game', 'Api\V1\GameController@index');
+    Route::get('players', 'Api\V1\PlayerController@show');
+    Route::post('players/create', 'Api\V1\PlayerController@create');
+
+    Route::get('games', 'Api\V1\GameController@index');
 });

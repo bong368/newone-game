@@ -9,9 +9,4 @@ class App extends Model
     protected $table = 'apps';
 
     public $timestamps = false;
-
-//    public function games()
-//    {
-//        return $this->belongsToMany(Game::class);
-//    }
 }
