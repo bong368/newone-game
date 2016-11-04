@@ -18,7 +18,7 @@ class VerifyHmacSignature
     public function handle($request, Closure $next)
     {
         if (!$request->hasHeader('x-app-key') || !$request->hasHeader('x-timestamp') || !$request->hasHeader('x-signature')) {
-            throw new ApiSignatureException();
+            throw new ApiSignatureException('Invalid authorization header', 401000);
         }
 
         $appKey = $request->header('x-app-key');
@@ -27,7 +27,7 @@ class VerifyHmacSignature
 
         $app = App::where('app_key', '=', $appKey)->first();
         if ($app === null) {
-            throw new ApiSignatureException();
+            throw new ApiSignatureException('App key not found', 401001);
         }
         $request->attributes->add(['APP' => $app]);
 
@@ -36,7 +36,7 @@ class VerifyHmacSignature
         $compareSignature = $this->calculateSignature($app->app_key, $app->secret_key, $timestamp, $baseUrl, $parameterString);
 
         if ($compareSignature !== $signature) {
-            throw new ApiSignatureException();
+            throw new ApiSignatureException('Signature does not match', 401002);
         }
 
         return $next($request);

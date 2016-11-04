@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use App\Http\Controllers\Controller;
 use App\Exceptions\ApiValidationException;
+use App\Exceptions\ApiNotFoundException;
 use App\Models\Member;
 use Carbon\Carbon;
 use Ramsey\Uuid\Uuid;
@@ -43,6 +44,86 @@ class PlayerController extends Controller
         $player->status = \MemberStatus::ACTIVE;
         $player->access_token = Uuid::uuid4()->getHex();
         $player->registered_at = Carbon::now();
+        $player->save();
+
+        return response()->json([
+            'username' => $player->username,
+            'nickname' => $player->nickname,
+            'coin' => $player->coin,
+            'status' => $player->status,
+            'access_token' => $player->access_token,
+        ]);
+    }
+
+    public function show(Request $request, $username)
+    {
+        $player = Member::where('username', '=', $username)
+            ->where('app_id', '=', $request->attributes->get('APP')->id)
+            ->where('status', '<>', \MemberStatus::DELETE)
+            ->first();
+
+        if ($player === null) {
+            throw new ApiNotFoundException('Player not found', 404000);
+        }
+
+        return response()->json([
+            'username' => $player->username,
+            'nickname' => $player->nickname,
+            'coin' => $player->coin,
+            'status' => $player->status,
+            'access_token' => $player->access_token,
+        ]);
+    }
+
+    public function update(Request $request, $username)
+    {
+        $validator = \Validator::make($request->input(), [
+            'nickname' => ['between:2,50'],
+            'status' => ['in:'.implode(',', \MemberStatus::getNames())],
+        ]);
+
+        if ($validator->fails()) {
+            throw new ApiValidationException($validator->errors());
+        }
+
+        $player = Member::where('username', '=', $username)
+            ->where('app_id', '=', $request->attributes->get('APP')->id)
+            ->where('status', '<>', \MemberStatus::DELETE)
+            ->first();
+
+        if ($player === null) {
+            throw new ApiNotFoundException('Player not found', 404000);
+        }
+
+        if ($request->has('nickname')) {
+            $player->nickname = $request->input('nickname');
+        }
+        if ($request->has('status')) {
+            $player->status = \MemberStatus::toValue($request->input('status'));
+        }
+        $player->save();
+
+        return response()->json([
+            'username' => $player->username,
+            'nickname' => $player->nickname,
+            'coin' => $player->coin,
+            'status' => $player->status,
+            'access_token' => $player->access_token,
+        ]);
+    }
+
+    public function refreshAccessToken(Request $request, $username)
+    {
+        $player = Member::where('username', '=', $username)
+            ->where('app_id', '=', $request->attributes->get('APP')->id)
+            ->where('status', '<>', \MemberStatus::DELETE)
+            ->first();
+
+        if ($player === null) {
+            throw new ApiNotFoundException('Player not found', 404000);
+        }
+
+        $player->access_token = Uuid::uuid4()->getHex();
         $player->save();
 
         return response()->json([
