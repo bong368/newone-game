@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers\Api\V1;
 
-use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
+use App\Exceptions\ApiNotFoundException;
 use App\Exceptions\ApiValidationException;
+use App\Http\Controllers\Controller;
 use App\Models\Game;
+use Illuminate\Http\Request;
 
 class GameController extends Controller
 {
@@ -22,20 +23,38 @@ class GameController extends Controller
             throw new ApiValidationException($validator->errors());
         }
 
-        $query = Game::appSubscribe($request->attributes->get('APP')->id)
-            ->select('name', 'route', 'width', 'height', 'jackpot', 'category', 'status');
+        $appId = $request->attributes->get('APP')->id;
+
+        $query = Game::subscribes($appId)
+            ->select('games.name', 'games.route', 'games.width', 'games.height', 'games.jackpot', 'games.category', 'games.status');
 
         if ($request->has('category')) {
-            $query->where('category', '=', \GameCategory::toValue($request->input('category')));
+            $query->where('games.category', '=', \GameCategory::toValue($request->input('category')));
         }
         if ($request->has('status')) {
-            $query->where('status', '=', \GameStatus::toValue($request->input('status')));
+            $query->where('games.status', '=', \GameStatus::toValue($request->input('status')));
         }
 
-        $results = $query->orderBy('order', 'desc')
-            ->orderBy('id', 'desc')
+        $results = $query->orderBy('games.order', 'desc')
+            ->orderBy('games.id', 'desc')
             ->paginate($request->input('limit', 10));
 
         return response()->paging($results);
+    }
+
+    public function show(Request $request, $name)
+    {
+        $appId = $request->attributes->get('APP')->id;
+
+        $game = Game::subscribes($appId)
+            ->where('games.name', '=', $name)
+            ->select('games.name', 'games.route', 'games.width', 'games.height', 'games.jackpot', 'games.category', 'games.status')
+            ->first();
+
+        if ($game === null) {
+            throw new ApiNotFoundException('Game not found', 404000);
+        }
+
+        return response()->json($game);
     }
 }

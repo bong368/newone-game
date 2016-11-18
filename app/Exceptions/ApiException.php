@@ -2,8 +2,8 @@
 
 namespace App\Exceptions;
 
-use Symfony\Component\HttpKernel\Exception\HttpException;
 use Illuminate\Support\MessageBag;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class ApiException extends HttpException
 {
@@ -14,7 +14,7 @@ class ApiException extends HttpException
      */
     private $errors;
 
-    public function __construct($statusCode, $errors = null, $message = null, $code = 0)
+    public function __construct($statusCode, $message = null, $code = 0, $errors = null)
     {
         if (is_null($errors)) {
             $this->errors = new MessageBag();

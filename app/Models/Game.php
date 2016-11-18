@@ -24,10 +24,10 @@ class Game extends Model
         return \GameStatus::toName($value);
     }
 
-    public function scopeAppSubscribe($query, $appId)
+    public function scopeSubscribes($query, $appId)
     {
         return $query->join('app_game', 'games.id', '=', 'app_game.game_id')
-            ->where('games.status', '<>', \GameStatus::PRIVATE)
-            ->where('app_game.app_id', '=', $appId);
+            ->where('app_game.app_id', '=', $appId)
+            ->where('games.status', '<>', \GameStatus::PRIVATE);
     }
 }

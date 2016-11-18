@@ -6,6 +6,6 @@ class ApiNotFoundException extends ApiException
 {
     public function __construct($message = 'Object not found', $code = 404000)
     {
-        parent::__construct(404, null, $message, $code);
+        parent::__construct(404, $message, $code);
     }
 }

@@ -115,3 +115,9 @@ abstract class GameStatus extends BaseEnum
     const PUBLIC = 1;
     const PREVIEW = 2;
 }
+
+abstract class TransferType extends BaseEnum
+{
+    const INWARD = 0;
+    const OUTWARD = 1;
+}

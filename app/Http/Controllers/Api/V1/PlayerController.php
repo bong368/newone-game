@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers\Api\V1;
 
-use Illuminate\Http\Request;
-use Illuminate\Validation\Rule;
-use App\Http\Controllers\Controller;
-use App\Exceptions\ApiValidationException;
 use App\Exceptions\ApiNotFoundException;
+use App\Exceptions\ApiValidationException;
+use App\Http\Controllers\Controller;
 use App\Models\Member;
 use Carbon\Carbon;
+use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use Ramsey\Uuid\Uuid;
 
 class PlayerController extends Controller
@@ -19,7 +19,7 @@ class PlayerController extends Controller
 
         $validator = \Validator::make($request->input(), [
             'username' => [
-                'required', 'between:2,50', 'regex:/^[a-zA-Z0-9]+$/',
+                'required', 'regex:/^[a-zA-Z0-9]*$/', 'between:2,50',
                 Rule::unique('members')->where(function ($query) use ($appId) {
                     $query->where('app_id', '=', $appId);
                 })
@@ -57,22 +57,18 @@ class PlayerController extends Controller
 
     public function show(Request $request, $username)
     {
-        $player = Member::where('username', '=', $username)
-            ->where('app_id', '=', $request->attributes->get('APP')->id)
-            ->where('status', '<>', \MemberStatus::DELETE)
+        $appId = $request->attributes->get('APP')->id;
+
+        $player = Member::alivePlayer($appId)
+            ->where('username', '=', $username)
+            ->select('username', 'nickname', 'coin', 'status', 'access_token')
             ->first();
 
         if ($player === null) {
             throw new ApiNotFoundException('Player not found', 404000);
         }
 
-        return response()->json([
-            'username' => $player->username,
-            'nickname' => $player->nickname,
-            'coin' => $player->coin,
-            'status' => $player->status,
-            'access_token' => $player->access_token,
-        ]);
+        return response()->json($player);
     }
 
     public function update(Request $request, $username)
@@ -86,9 +82,10 @@ class PlayerController extends Controller
             throw new ApiValidationException($validator->errors());
         }
 
-        $player = Member::where('username', '=', $username)
-            ->where('app_id', '=', $request->attributes->get('APP')->id)
-            ->where('status', '<>', \MemberStatus::DELETE)
+        $appId = $request->attributes->get('APP')->id;
+
+        $player = Member::alivePlayer($appId)
+            ->where('username', '=', $username)
             ->first();
 
         if ($player === null) {
@@ -114,9 +111,10 @@ class PlayerController extends Controller
 
     public function refreshAccessToken(Request $request, $username)
     {
-        $player = Member::where('username', '=', $username)
-            ->where('app_id', '=', $request->attributes->get('APP')->id)
-            ->where('status', '<>', \MemberStatus::DELETE)
+        $appId = $request->attributes->get('APP')->id;
+
+        $player = Member::alivePlayer($appId)
+            ->where('username', '=', $username)
             ->first();
 
         if ($player === null) {
