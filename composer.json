@@ -9,7 +9,8 @@
         "laravel/framework": "5.3.*",
         "predis/predis": "1.1.*",
         "ramsey/uuid": "3.5.*",
-        "namshi/jose": "7.2.*"
+        "namshi/jose": "7.2.*",
+        "jenssegers/agent": "2.3.*"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",

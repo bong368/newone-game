@@ -79,7 +79,7 @@ class TransactionController extends Controller
 
         $appId = $request->attributes->get('APP')->id;
 
-        $player = Member::alivePlayer($appId)
+        $player = Member::unDeletePlayer($appId)
             ->where('username', '=', $request->input('username'))
             ->select('id', 'username')
             ->first();
@@ -117,7 +117,7 @@ class TransactionController extends Controller
 
         $appId = $request->attributes->get('APP')->id;
 
-        $player = Member::alivePlayer($appId)
+        $player = Member::unDeletePlayer($appId)
             ->where('username', '=', $request->input('username'))
             ->select('id', 'username')
             ->first();

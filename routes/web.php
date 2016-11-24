@@ -22,3 +22,8 @@ Route::get('/', function () {
 
     return view('welcome');
 });
+
+Route::get('play/{name}/{access_token}', 'PlayController@index');
+
+//Route::get('play/legacy/{name}', 'PlayController@legacy');
+//Route::get('play/avslot/{name}', 'PlayController@avslot');

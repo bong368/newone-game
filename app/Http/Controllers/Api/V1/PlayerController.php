@@ -59,7 +59,7 @@ class PlayerController extends Controller
     {
         $appId = $request->attributes->get('APP')->id;
 
-        $player = Member::alivePlayer($appId)
+        $player = Member::unDeletePlayer($appId)
             ->where('username', '=', $username)
             ->select('username', 'nickname', 'coin', 'status', 'access_token')
             ->first();
@@ -84,7 +84,7 @@ class PlayerController extends Controller
 
         $appId = $request->attributes->get('APP')->id;
 
-        $player = Member::alivePlayer($appId)
+        $player = Member::unDeletePlayer($appId)
             ->where('username', '=', $username)
             ->first();
 
@@ -113,7 +113,7 @@ class PlayerController extends Controller
     {
         $appId = $request->attributes->get('APP')->id;
 
-        $player = Member::alivePlayer($appId)
+        $player = Member::unDeletePlayer($appId)
             ->where('username', '=', $username)
             ->first();
 

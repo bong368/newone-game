@@ -27,7 +27,20 @@ class Game extends Model
     public function scopeSubscribes($query, $appId)
     {
         return $query->join('app_game', 'games.id', '=', 'app_game.game_id')
+            ->where('app_game.app_id', '=', $appId);
+    }
+
+    public function scopeUnPrivateSubscribes($query, $appId)
+    {
+        return $query->join('app_game', 'games.id', '=', 'app_game.game_id')
             ->where('app_game.app_id', '=', $appId)
             ->where('games.status', '<>', \GameStatus::PRIVATE);
+    }
+
+    public function scopePublicSubscribes($query, $appId)
+    {
+        return $query->join('app_game', 'games.id', '=', 'app_game.game_id')
+            ->where('app_game.app_id', '=', $appId)
+            ->where('games.status', '=', \GameStatus::PUBLIC);
     }
 }

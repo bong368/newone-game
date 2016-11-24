@@ -25,7 +25,7 @@ class GameController extends Controller
 
         $appId = $request->attributes->get('APP')->id;
 
-        $query = Game::subscribes($appId)
+        $query = Game::unPrivateSubscribes($appId)
             ->select('games.name', 'games.route', 'games.width', 'games.height', 'games.jackpot', 'games.category', 'games.status');
 
         if ($request->has('category')) {
@@ -46,7 +46,7 @@ class GameController extends Controller
     {
         $appId = $request->attributes->get('APP')->id;
 
-        $game = Game::subscribes($appId)
+        $game = Game::unPrivateSubscribes($appId)
             ->where('games.name', '=', $name)
             ->select('games.name', 'games.route', 'games.width', 'games.height', 'games.jackpot', 'games.category', 'games.status')
             ->first();
