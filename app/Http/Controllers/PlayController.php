@@ -18,7 +18,7 @@ class PlayController extends Controller
         $player = Member::where('role', '=', \MemberRole::PLAYER)
             ->where('status', '=', \MemberStatus::ACTIVE)
             ->where('access_token', '=', $accessToken)
-            ->select('id', 'app_id', 'username', 'access_token')
+            ->select('id', 'app_id')
             ->first();
 
         if ($player === null) {
@@ -41,7 +41,7 @@ class PlayController extends Controller
 
         $this->gameClick($player->app_id, $player->id, $game->id, $platform, $browser, $request->ip(), Carbon::now());
 
-        $result = $this->{$game->route}($player, $game);
+        $result = $this->{$game->route}($game, $accessToken, 'en-US');
 
 //        try {
 //
@@ -49,49 +49,20 @@ class PlayController extends Controller
 //            throw new ApiException(500, 'Method ['.$game->route.'] error', 50000);
 //        }
 
-        return response()->view('play.'.$game->route, $result);
+        return response()->view('play.' . $game->route, $result);
     }
 
-    private function loader(Member $player, Game $game)
+    private function proloader(Game $game, $accessToken, $culture)
     {
-//        public string LoaderToken { get; set; }
-//        public string GameName { get; set; }
-//        public string GameToken { get; set; }
-//        public string Culture { get; set; }
-//        public int GameWidth { get; set; }
-//        public int GameHeight { get; set; }
-//        public string ServerUrl { get; set; }
-//        public int ServerPort { get; set; }
-//        public string AccessToken { get; set; }
-//        public string Account { get; set; }
-
-//        return 'loader: '.$name;
-
         return [
             'loader_token' => 'loader_token',
             'game_name' => $game->name,
             'game_token' => $game->file_token,
-            'game_width' => 800,
-            'game_height' => 600,
-            'culture' => 'en-US',
             'server_url' => $game->server_url,
             'server_port' => $game->server_port,
-            'access_token' => $player->access_token,
-            'account' => $player->username,
+            'access_token' => $accessToken,
+            'culture' => $culture,
         ];
-    }
-
-    private function proloader($name)
-    {
-//        public string LoaderToken { get; set; }
-//        public string GameName { get; set; }
-//        public string GameToken { get; set; }
-//        public string Culture { get; set; }
-//        public string ServerUrl { get; set; }
-//        public int ServerPort { get; set; }
-//        public string AccessToken { get; set; }
-
-        return 'proloader: '.$name;
     }
 
     private function createjs($name)
@@ -103,7 +74,7 @@ class PlayController extends Controller
 //        public int ServerPort { get; set; }
 //        public string AccessToken { get; set; }
 
-        return 'createjs: '.$name;
+        return 'createjs: ' . $name;
     }
 
     private function cocos($name)
@@ -115,7 +86,7 @@ class PlayController extends Controller
 //        public int ServerPort { get; set; }
 //        public string AccessToken { get; set; }
 
-        return 'cocos: '.$name;
+        return 'cocos: ' . $name;
     }
 
     private function getUserAgent()
@@ -125,8 +96,8 @@ class PlayController extends Controller
         $browser = $agent->browser();
 
         return [
-            $platform.'/'.$agent->version($platform),
-            $browser.'/'.$agent->version($browser),
+            $platform . '/' . $agent->version($platform),
+            $browser . '/' . $agent->version($browser),
             $agent->languages()
         ];
     }

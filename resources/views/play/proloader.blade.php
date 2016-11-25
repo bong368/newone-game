@@ -18,22 +18,19 @@
 <script>
     function startGame() {
         if (!isFlashPlayerInstalled()) {
-            $('#game').html('<a href="https://get.adobe.com/tw/flashplayer" target="_blank">你沒有安裝 Flash Player，請點我前往安裝</a>');
+            $('#game').html('<a href="https://get.adobe.com/tw/flashplayer" target="_blank">Flash player is needed, click here to download flash player.</a>');
             return;
         }
 
-        var loader = 'http://igdev.ricogaming.net:81/games/loader.swf?v={{ $loader_token }}';
+        var loader = 'http://d21wzngo3harup.cloudfront.net/swf/proloader.swf?v={{ $loader_token }}';
         var flashvars = {
-            GameUrl: 'http://igdev.ricogaming.net:81/games',
-            GameName: '{{ $game_name }}',
-            Token: '{{ $game_token }}',
-            Width: '{{ $game_width }}',
-            Height: '{{ $game_height }}',
-            Culture: '{{ $culture }}',
-            Ip: '{{ $server_url }}',
-            Port: '{{ $server_port }}',
-            SessionId: '{{ $access_token }}',
-            Account: '{{ $account }}'
+            gameUrl: 'http://d21wzngo3harup.cloudfront.net/swf',
+            gameName: '{{ $game_name }}',
+            gameCulture: '{{ $culture }}',
+            gameFileToken: '{{ $game_token }}',
+            serverUrl: '{{ $server_url }}',
+            serverPort: '{{ $server_port }}',
+            accessToken: '{{ $access_token }}'
         };
 
         embedSwf(loader, flashvars, 'game', '100%', '100%');
