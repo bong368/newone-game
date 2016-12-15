@@ -18,7 +18,7 @@
 <script>
     function startGame() {
         if (!isFlashPlayerInstalled()) {
-            window.location = 'https://get.adobe.com/tw/flashplayer';
+            $('#game').html('<a href="https://get.adobe.com/tw/flashplayer" target="_blank">Flash player is needed, click here to download flash player.</a>');
             return;
         }
 
