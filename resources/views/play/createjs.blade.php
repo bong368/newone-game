@@ -7,7 +7,6 @@
     <title>{{ $game_name }}</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/swfobject/2.2/swfobject.min.js"></script>
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
     <script src="{{ asset('js/app.js') }}"></script>
 </head>
@@ -16,15 +15,9 @@
     <div id="game"></div>
 </div>
 <script>
-    function startGame() {
-        if (!isFlashPlayerInstalled()) {
-            window.location = 'https://get.adobe.com/tw/flashplayer';
-            return;
-        }
-
-        var swfUrl = 'http://d21wzngo3harup.cloudfront.net/swf/proloader.swf?v={{ $loader_token }}';
-        var flashvars = {
-            gameUrl: 'http://d21wzngo3harup.cloudfront.net/swf',
+    function getConfig() {
+        return {
+            gameUrl: 'http://d21wzngo3harup.cloudfront.net/swf/{{ $game_name }}',
             gameName: '{{ $game_name }}',
             gameCulture: '{{ $culture }}',
             gameFileToken: '{{ $game_token }}',
@@ -32,8 +25,6 @@
             serverPort: '{{ $server_port }}',
             accessToken: '{{ $access_token }}'
         };
-
-        embedSwf(swfUrl, flashvars, 'game', '100%', '100%');
     }
 
     function returnToLobby() {
@@ -41,8 +32,13 @@
     }
 
     $(document).ready(function () {
-        startGame();
+
     });
 </script>
+<script src="http://d21wzngo3harup.cloudfront.net/swf/{{ $game_name }}/Core.js?v={{ $game_token }}"></script>
+<script src="http://d21wzngo3harup.cloudfront.net/swf/{{ $game_name }}/UILoader.js?v={{ $game_token }}"></script>
+<script src="http://d21wzngo3harup.cloudfront.net/swf/{{ $game_name }}/UISystem.js?v={{ $game_token }}"></script>
+<script src="http://d21wzngo3harup.cloudfront.net/swf/{{ $game_name }}/UIAssets.js?v={{ $game_token }}"></script>
+<script src="http://d21wzngo3harup.cloudfront.net/swf/{{ $game_name }}/Main.js?v={{ $game_token }}"></script>
 </body>
 </html>

@@ -29,20 +29,12 @@ class AppGameTableSeeder extends Seeder
                 'game_id' => 4,
             ],
             [
-                'app_id' => 1,
-                'game_id' => 5,
+                'app_id' => 2,
+                'game_id' => 1,
             ],
             [
                 'app_id' => 2,
                 'game_id' => 3,
-            ],
-            [
-                'app_id' => 2,
-                'game_id' => 4,
-            ],
-            [
-                'app_id' => 2,
-                'game_id' => 5,
             ],
         ]);
     }

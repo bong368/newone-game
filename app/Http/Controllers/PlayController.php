@@ -41,12 +41,12 @@ class PlayController extends Controller
 
         $this->gameClick($player->app_id, $player->id, $game->id, $platform, $browser, $request->ip(), Carbon::now());
 
-        $result = $this->{$game->route}($game, $accessToken, 'en-US');
+        $result = $this->{$game->route}($game, $accessToken, 'zh-CN');
 
 //        try {
 //
 //        } catch (\Exception $e) {
-//            throw new ApiException(500, 'Method ['.$game->route.'] error', 50000);
+//
 //        }
 
         return response()->view('play.' . $game->route, $result);
@@ -65,28 +65,40 @@ class PlayController extends Controller
         ];
     }
 
-    private function createjs($name)
+    private function createjs(Game $game, $accessToken, $culture)
     {
-//        public string GameName { get; set; }
-//        public string GameToken { get; set; }
-//        public string Culture { get; set; }
-//        public string ServerUrl { get; set; }
-//        public int ServerPort { get; set; }
-//        public string AccessToken { get; set; }
-
-        return 'createjs: ' . $name;
+        return [
+            'game_name' => $game->name,
+            'game_token' => $game->file_token,
+            'server_url' => $game->server_url,
+            'server_port' => $game->server_port,
+            'access_token' => $accessToken,
+            'culture' => $culture,
+        ];
     }
 
-    private function cocos($name)
+    private function cocos2d(Game $game, $accessToken, $culture)
     {
-//        public string GameName { get; set; }
-//        public string GameToken { get; set; }
-//        public string Culture { get; set; }
-//        public string ServerUrl { get; set; }
-//        public int ServerPort { get; set; }
-//        public string AccessToken { get; set; }
+        return [
+            'game_name' => $game->name,
+            'game_token' => $game->file_token,
+            'server_url' => $game->server_url,
+            'server_port' => $game->server_port,
+            'access_token' => $accessToken,
+            'culture' => $culture,
+        ];
+    }
 
-        return 'cocos: ' . $name;
+    private function texasholdem(Game $game, $accessToken, $culture)
+    {
+        return [
+            'game_name' => $game->name,
+            'game_token' => $game->file_token,
+            'server_url' => $game->server_url,
+            'server_port' => $game->server_port,
+            'access_token' => $accessToken,
+            'culture' => $culture,
+        ];
     }
 
     private function getUserAgent()
